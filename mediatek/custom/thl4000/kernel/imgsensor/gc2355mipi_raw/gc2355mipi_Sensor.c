@@ -777,10 +777,10 @@ static void GC2355MIPI_Sensor_Init(void)
 
 UINT32 GC2355MIPIOpen(void)
 {
-	kal_uint16 sensor_id=0; 
+	kal_uint16 sensor_id=2355; 
 
 	// check if sensor ID correct
-	sensor_id=((GC2355MIPI_read_cmos_sensor(0xf0) << 8) | GC2355MIPI_read_cmos_sensor(0xf1));   
+	//sensor_id=((GC2355MIPI_read_cmos_sensor(0xf0) << 8) | GC2355MIPI_read_cmos_sensor(0xf1));  и без этого обойдемся  
 #ifdef GC2355MIPI_DRIVER_TRACE
 	SENSORDB("GC2355MIPIOpen, sensor_id:%x \n",sensor_id);
 #endif		
