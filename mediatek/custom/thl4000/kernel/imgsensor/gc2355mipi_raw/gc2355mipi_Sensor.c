@@ -107,7 +107,10 @@ kal_uint8 out_buff[2];
     out_buff[0] = addr;
     out_buff[1] = para;
 
-    iWriteRegI2C((u8*)out_buff , (u16)sizeof(out_buff), GC2355MIPI_WRITE_ID); 
+    iWriteRegI2C((u8*)out_buff , (u16)sizeof(out_buff), GC2355MIPI_WRITE_ID);
+    if (0 != iWriteRegI2C((u8*)out_buff , (u16)sizeof(out_buff), GC2355MIPI_WRITE_ID)){
+	 SENSORDB("ERROR: GC2355MIPI TUT KOSYAK! : addr  = %d \n ",addr);   
+    }
 }
 
 /*************************************************************************
@@ -134,7 +137,7 @@ static kal_uint8 GC2355MIPI_read_cmos_sensor(kal_uint8 addr)
   out_buff[0] = addr;
 
     if (0 != iReadRegI2C((u8*)out_buff , (u16) sizeof(out_buff), (u8*)in_buff, (u16) sizeof(in_buff), GC2355MIPI_WRITE_ID)) {
-        SENSORDB("ERROR: GC2355MIPI_read_cmos_sensor \n");
+        SENSORDB("ERROR: GC2355MIPI_read_cmos_sensor : addr  = %d \n ",addr);
     }
   return in_buff[0];
 }
