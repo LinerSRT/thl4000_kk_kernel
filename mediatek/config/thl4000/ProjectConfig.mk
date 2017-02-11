@@ -125,7 +125,7 @@ CUSTOM_KERNEL_HEADSET=accdet
 
 # Kernel space image sensor driver. Define  project used all image sensors .The value is combination of CUSTOM_KERNEL_MAIN_IMGSENSOR, CUSTOM_KERNEL_MAIN_BACKUP_IMGSENSOR, CUSTOM_KERNEL_SUB_IMGSENSOR, and CUSTOM_KERNEL_SUB_BACKUP_IMGSENSOR
 #CUSTOM_KERNEL_IMGSENSOR = ov8825_mipi_raw hi256_mipi_yuv ov8826_mipi_raw s5k3h7y_mipi_raw
-CUSTOM_KERNEL_IMGSENSOR = gc5004_mipi_raw gc2355mipi_raw
+CUSTOM_KERNEL_IMGSENSOR = gc5004_mipi_raw gc2355_mipi_raw
 
 # key pad driver to report key event
 CUSTOM_KERNEL_KPD=kpd
@@ -164,7 +164,7 @@ CUSTOM_KERNEL_SUB_BACKUP_LENS=
 
 # Kernel space image sensor driver:Sub camera (front camera) used sensor driver.Value is used sub sensor name.
 #CUSTOM_KERNEL_SUB_IMGSENSOR = hi256_mipi_yuv
-CUSTOM_KERNEL_SUB_IMGSENSOR = gc2355mipi_raw #hi256_mipi_yuv hi258_mipi_yuv_cmk hi258_mipi_yuv_sw
+CUSTOM_KERNEL_SUB_IMGSENSOR = gc2355_mipi_raw #hi256_mipi_yuv hi258_mipi_yuv_cmk hi258_mipi_yuv_sw
 
 # lens driver config for video telephony camera
 CUSTOM_KERNEL_SUB_LENS=dummy_lens

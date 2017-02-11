@@ -76,7 +76,7 @@ u32 pinSet[2][8] = {
         if(pinSetIdx == 0)  //main
         {
         //disable sub
-			        printk("Power on on GC5004, pinSetIdx=%d \n",pinSetIdx); 
+			        printk("Power on GC5004, pinSetIdx=%d \n",pinSetIdx); 
 			if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_D, VOL_1500,mode_name))
 			{
 			     PK_DBG("[CAMERA SENSOR] Fail to enable digital power\n");
@@ -119,8 +119,6 @@ u32 pinSet[2][8] = {
         if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN_PIN,GPIO_CAMERA_CMPDN_PIN_M_GPIO)){PK_DBG("[CAMERA LENS] set gpio mode failed!! \n");}
         if(mt_set_gpio_dir(GPIO_CAMERA_CMRST_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA SENSOR] set gpio dir failed!! \n");}
         if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
-        //if(mt_set_gpio_out(pinSet[1-pinSetIdx][IDX_PS_CMRST],pinSet[1-pinSetIdx][IDX_PS_CMRST+IDX_PS_OFF])){PK_DBG("[CAMERA SENSOR] set gpio failed!! \n");} //low == reset sensor
-        //if(mt_set_gpio_out(pinSet[1-pinSetIdx][IDX_PS_CMPDN],pinSet[1-pinSetIdx][IDX_PS_CMPDN+IDX_PS_OFF])){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
         if(mt_set_gpio_out(GPIO_CAMERA_CMPDN_PIN,0)){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
         
         if(mt_set_gpio_out(GPIO_CAMERA_CMRST_PIN,0)){PK_DBG("[CAMERA SENSOR] set gpio failed!! \n");} //low == reset sensor
@@ -131,7 +129,8 @@ u32 pinSet[2][8] = {
         }
 		else if (pinSetIdx == 1)  //sub
 		{
-        	printk("Power on on GC2355, pinSetIdx=%d \n",pinSetIdx); 
+        	printk("Power on GC2355, pinSetIdx=%d \n",pinSetIdx); 
+
 			 if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_A, VOL_2800,mode_name))
 		    {
 		        PK_DBG("[CAMERA SENSOR] Fail to enable digital power\n");
