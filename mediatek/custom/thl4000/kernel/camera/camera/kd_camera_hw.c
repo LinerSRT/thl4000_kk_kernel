@@ -76,6 +76,8 @@ u32 pinSet[2][8] = {
         if(pinSetIdx == 0)  //main
         {
         //disable sub
+			if (currSensorName && (0 == strcmp(SENSOR_DRVNAME_GC5004_MIPI_RAW,currSensorName)))
+        		{
 			        printk("Power on GC5004, pinSetIdx=%d \n",pinSetIdx); 
 			if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_D, VOL_1500,mode_name))
 			{
@@ -116,6 +118,7 @@ u32 pinSet[2][8] = {
 		//enable main
         printk("Enable CMRST pin for main sensor%d \n",GPIO_CAMERA_CMRST_PIN); //FIXME
     	if(mt_set_gpio_mode(GPIO_CAMERA_CMRST_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
+	printk("Enable CMPDN pin for main sensor%d \n",GPIO_CAMERA_CMPDN_PIN); //FIXME
         if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN_PIN,GPIO_CAMERA_CMPDN_PIN_M_GPIO)){PK_DBG("[CAMERA LENS] set gpio mode failed!! \n");}
         if(mt_set_gpio_dir(GPIO_CAMERA_CMRST_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA SENSOR] set gpio dir failed!! \n");}
         if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
@@ -125,10 +128,12 @@ u32 pinSet[2][8] = {
         mdelay(2);
         if(mt_set_gpio_out(GPIO_CAMERA_CMRST_PIN,1)){PK_DBG("[CAMERA SENSOR] set gpio failed!! \n");} //low == reset sensor
         mdelay(2);
-            
+            }
         }
 		else if (pinSetIdx == 1)  //sub
 		{
+		if ((currSensorName && (0 == strcmp(SENSOR_DRVNAME_GC2355_MIPI_RAW,currSensorName))) | (currSensorName && (0 == strcmp(SENSOR_DRVNAME_GC0310MIPI_YUV,currSensorName))))
+        	{
         	printk("Power on GC2355, pinSetIdx=%d \n",pinSetIdx); 
 
 			 if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_A, VOL_2800,mode_name))
@@ -152,31 +157,35 @@ u32 pinSet[2][8] = {
 		        //return -EIO;
 		        goto _kdCISModulePowerOn_exit_;
 		    }
+			if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_A2, VOL_2800,mode_name))
+			{
+				PK_DBG("[CAMERA SENSOR] Fail to enable analog power\n");
+				//return -EIO;
+				goto _kdCISModulePowerOn_exit_;
+			}                   
+       			 msleep(50);
 			
-			mdelay(2); 
-       		 printk("Disable main sensor"); 
-				 //disable main
-			if(mt_set_gpio_mode(GPIO_CAMERA_CMRST_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
-			if(mt_set_gpio_dir(GPIO_CAMERA_CMRST_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
-			if(mt_set_gpio_out(GPIO_CAMERA_CMRST_PIN,0)){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
-			if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
-			if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
-			if(mt_set_gpio_out(GPIO_CAMERA_CMPDN_PIN,1)){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high
+        mdelay(2); 
+        
+        printk("Reset CMPDN pin for sub sensor%d \n",GPIO_CAMERA_CMPDN1_PIN); //FIXME
+		if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
+		if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
+		if(mt_set_gpio_out(GPIO_CAMERA_CMPDN_PIN,1)){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
 
-			//enable sub
-	    	 if(mt_set_gpio_mode(GPIO_CAMERA_CMRST_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
-	        if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN_PIN,GPIO_CAMERA_CMPDN_PIN_M_GPIO)){PK_DBG("[CAMERA LENS] set gpio mode failed!! \n");}
-	        if(mt_set_gpio_dir(GPIO_CAMERA_CMRST_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA SENSOR] set gpio dir failed!! \n");}
-	        if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN1_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
-	        //if(mt_set_gpio_out(pinSet[1-pinSetIdx][IDX_PS_CMRST],pinSet[1-pinSetIdx][IDX_PS_CMRST+IDX_PS_OFF])){PK_DBG("[CAMERA SENSOR] set gpio failed!! \n");} //low == reset sensor
-	        //if(mt_set_gpio_out(pinSet[1-pinSetIdx][IDX_PS_CMPDN],pinSet[1-pinSetIdx][IDX_PS_CMPDN+IDX_PS_OFF])){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
-	        if(mt_set_gpio_out(GPIO_CAMERA_CMPDN1_PIN,0)){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
-	        
-	        if(mt_set_gpio_out(GPIO_CAMERA_CMRST_PIN,0)){PK_DBG("[CAMERA SENSOR] set gpio failed!! \n");} //low == reset sensor
-	        mdelay(2);
-	        if(mt_set_gpio_out(GPIO_CAMERA_CMRST_PIN,1)){PK_DBG("[CAMERA SENSOR] set gpio failed!! \n");} //low == reset sensor
-	        mdelay(2);
-            
+		//enable main
+        printk("Enable CMRST pin for sub sensor%d \n",GPIO_CAMERA_CMRST_PIN); //FIXME
+    	if(mt_set_gpio_mode(GPIO_CAMERA_CMRST_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
+	printk("Enable CMPDN1 pin for sub sensor%d \n",GPIO_CAMERA_CMPDN1_PIN); //FIXME
+        if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN1_PIN,GPIO_CAMERA_CMPDN1_PIN_M_GPIO)){PK_DBG("[CAMERA LENS] set gpio mode failed!! \n");}
+        if(mt_set_gpio_dir(GPIO_CAMERA_CMRST_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA SENSOR] set gpio dir failed!! \n");}
+        if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN1_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
+        if(mt_set_gpio_out(GPIO_CAMERA_CMPDN1_PIN,0)){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
+        
+        if(mt_set_gpio_out(GPIO_CAMERA_CMRST_PIN,0)){PK_DBG("[CAMERA SENSOR] set gpio failed!! \n");} //low == reset sensor
+        mdelay(2);
+        if(mt_set_gpio_out(GPIO_CAMERA_CMRST_PIN,1)){PK_DBG("[CAMERA SENSOR] set gpio failed!! \n");} //low == reset sensor
+        mdelay(2);
+            	}
 		}
 
     }
@@ -242,6 +251,11 @@ u32 pinSet[2][8] = {
 	            //return -EIO;
 	            goto _kdCISModulePowerOn_exit_;
 	        }  
+		if(TRUE != hwPowerDown(CAMERA_POWER_VCAM_A2,mode_name)) {
+	            PK_DBG("[CAMERA SENSOR] Fail to OFF analog power\n");
+	            //return -EIO;
+	            goto _kdCISModulePowerOn_exit_;
+	        }
 		}
     }//
 
@@ -254,5 +268,6 @@ _kdCISModulePowerOn_exit_:
 EXPORT_SYMBOL(kdCISModulePowerOn);
 
 //#endif //#if defined(MT6516)
+
 
 
