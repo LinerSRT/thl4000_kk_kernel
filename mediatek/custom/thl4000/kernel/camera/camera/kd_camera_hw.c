@@ -61,10 +61,18 @@ u32 pinSet[2][8] = {
                    };
 
     if (DUAL_CAMERA_MAIN_SENSOR == SensorIdx){
+	if (currSensorName && (0 == strcmp(SENSOR_DRVNAME_GC5004_MIPI_RAW,currSensorName))){
         pinSetIdx = 0;
+	}else{
+	printk("[serinity-fix]kdCISModulePowerOn get in---  sensorIdx not compare with sensor name: %s\n", currSensorName);  
+	}
     }
     else if (DUAL_CAMERA_SUB_SENSOR == SensorIdx) {
+        if (currSensorName && (0 == strcmp(SENSOR_DRVNAME_GC2355_MIPI_RAW,currSensorName))){
         pinSetIdx = 1;
+	}else{
+	printk("[serinity-fix]kdCISModulePowerOn get in---  sensorIdx not compare with sensor name: %s\n", currSensorName);  
+	}
     }
 
     //power ON
@@ -110,15 +118,15 @@ u32 pinSet[2][8] = {
         // wait power to be stable 
         mdelay(2); 
         
-        printk("Reset CMPDN1 pin for main sensor%d \n",GPIO_CAMERA_CMPDN1_PIN); //FIXME
+        printk("[serinity-fix] Reset CMPDN1 pin for main sensor%d \n",GPIO_CAMERA_CMPDN1_PIN); //FIXME
 		if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN1_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
 		if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN1_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
 		if(mt_set_gpio_out(GPIO_CAMERA_CMPDN1_PIN,1)){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
 
 		//enable main
-        printk("Enable CMRST pin for main sensor%d \n",GPIO_CAMERA_CMRST_PIN); //FIXME
+        printk("[serinity-fix] Enable CMRST pin for main sensor%d \n",GPIO_CAMERA_CMRST_PIN); //FIXME
     	if(mt_set_gpio_mode(GPIO_CAMERA_CMRST_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
-	printk("Enable CMPDN pin for main sensor%d \n",GPIO_CAMERA_CMPDN_PIN); //FIXME
+	printk("[serinity-fix] Enable CMPDN pin for main sensor%d \n",GPIO_CAMERA_CMPDN_PIN); //FIXME
         if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN_PIN,GPIO_CAMERA_CMPDN_PIN_M_GPIO)){PK_DBG("[CAMERA LENS] set gpio mode failed!! \n");}
         if(mt_set_gpio_dir(GPIO_CAMERA_CMRST_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA SENSOR] set gpio dir failed!! \n");}
         if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
@@ -132,9 +140,9 @@ u32 pinSet[2][8] = {
         }
 		else if (pinSetIdx == 1)  //sub
 		{
-		if ((currSensorName && (0 == strcmp(SENSOR_DRVNAME_GC2355_MIPI_RAW,currSensorName))) | (currSensorName && (0 == strcmp(SENSOR_DRVNAME_GC0310MIPI_YUV,currSensorName))))
+		if (currSensorName && ((0 == strcmp(SENSOR_DRVNAME_GC2355_MIPI_RAW,currSensorName)) || (0 == strcmp(SENSOR_DRVNAME_GC0310MIPI_YUV,currSensorName))))
         	{
-        	printk("Power on GC2355, pinSetIdx=%d \n",pinSetIdx); 
+        	printk("[serinity-fix] Power on GC2355, pinSetIdx=%d \n",pinSetIdx); 
 
 			 if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_A, VOL_2800,mode_name))
 		    {
@@ -167,15 +175,14 @@ u32 pinSet[2][8] = {
 			
         mdelay(2); 
         
-        printk("Reset CMPDN pin for sub sensor%d \n",GPIO_CAMERA_CMPDN1_PIN); //FIXME
+        printk("[serinity-fix] Reset CMPDN pin for sub sensor%d \n",GPIO_CAMERA_CMPDN1_PIN); //FIXME
 		if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
 		if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
 		if(mt_set_gpio_out(GPIO_CAMERA_CMPDN_PIN,1)){PK_DBG("[CAMERA LENS] set gpio failed!! \n");} //high == power down lens module
 
-		//enable main
-        printk("Enable CMRST pin for sub sensor%d \n",GPIO_CAMERA_CMRST_PIN); //FIXME
+        printk("[serinity-fix] Enable CMRST pin for sub sensor%d \n",GPIO_CAMERA_CMRST_PIN); //FIXME
     	if(mt_set_gpio_mode(GPIO_CAMERA_CMRST_PIN,GPIO_CAMERA_CMRST_PIN_M_GPIO)){PK_DBG("[CAMERA SENSOR] set gpio mode failed!! \n");}
-	printk("Enable CMPDN1 pin for sub sensor%d \n",GPIO_CAMERA_CMPDN1_PIN); //FIXME
+	printk("[serinity-fix] Enable CMPDN1 pin for sub sensor%d \n",GPIO_CAMERA_CMPDN1_PIN); //FIXME
         if(mt_set_gpio_mode(GPIO_CAMERA_CMPDN1_PIN,GPIO_CAMERA_CMPDN1_PIN_M_GPIO)){PK_DBG("[CAMERA LENS] set gpio mode failed!! \n");}
         if(mt_set_gpio_dir(GPIO_CAMERA_CMRST_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA SENSOR] set gpio dir failed!! \n");}
         if(mt_set_gpio_dir(GPIO_CAMERA_CMPDN1_PIN,GPIO_DIR_OUT)){PK_DBG("[CAMERA LENS] set gpio dir failed!! \n");}
