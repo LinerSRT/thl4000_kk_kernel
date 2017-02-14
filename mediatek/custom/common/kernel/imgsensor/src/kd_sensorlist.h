@@ -86,7 +86,7 @@ UINT32 GC2355_MIPI_RAW_SensorInit(PSENSOR_FUNCTION_STRUCT *pfFunc);
 //! 2. This file should be the same as mediatek\custom\common\hal\imgsensor\src\sensorlist.cpp
 ACDK_KD_SENSOR_INIT_FUNCTION_STRUCT kdSensorList[MAX_NUM_OF_SUPPORT_SENSOR+1] =
 {
-#if defined(GC5004MIPI_RAW)
+#if defined(GC5004_MIPI_RAW)
     {GC5004MIPI_SENSOR_ID, SENSOR_DRVNAME_GC5004_MIPI_RAW, GC5004MIPI_RAW_SensorInit},
 #endif
 #if defined(GC2355_MIPI_RAW)
